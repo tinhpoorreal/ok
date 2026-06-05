@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cashback RCGV Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Điều hướng">
+        <div class="brand">
+          <div class="brand-mark">C</div>
+          <div>
+            <p>Cashback</p>
+            <strong>RCGV</strong>
+          </div>
+        </div>
+        <nav>
+          <a href="#overview" class="active">Tổng quan</a>
+          <a href="#cards">Danh sách thẻ</a>
+          <a href="#calculator">Ước tính cashback</a>
+          <a href="#verify">Cần xác minh</a>
+        </nav>
+        <div class="source-note">
+          <span>Nguồn dữ liệu</span>
+          <strong>cashback_RCGV_final.xlsx</strong>
+        </div>
+      </aside>
+
+      <main>
+        <section id="overview" class="topbar">
+          <div>
+            <p class="eyebrow">Theo dõi hoàn tiền thẻ tín dụng</p>
+            <h1>Dashboard ưu đãi cashback theo danh mục chi tiêu</h1>
+          </div>
+          <div class="security-badge">Không lưu số thẻ, không xử lý thanh toán</div>
+        </section>
+
+        <section class="metrics" aria-label="Chỉ số tổng quan">
+          <article>
+            <span>Tổng thẻ</span>
+            <strong id="totalCards">0</strong>
+            <p>Từ các sheet danh mục RCGV</p>
+          </article>
+          <article>
+            <span>Ngân hàng</span>
+            <strong id="totalBanks">0</strong>
+            <p>Đã xuất hiện trong dữ liệu</p>
+          </article>
+          <article>
+            <span>Đã enrich</span>
+            <strong id="enrichedCards">0</strong>
+            <p>Dòng có thông tin ưu đãi chi tiết</p>
+          </article>
+          <article>
+            <span>Cần verify</span>
+            <strong id="openQuestions">0</strong>
+            <p>Thiếu hạn mức, phí hoặc điều kiện</p>
+          </article>
+        </section>
+
+        <section class="workspace">
+          <div class="panel chart-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Phân bổ danh mục</p>
+                <h2>Số thẻ theo nhóm ưu đãi</h2>
+              </div>
+            </div>
+            <div id="categoryBars" class="bar-list"></div>
+          </div>
+
+          <div class="panel insight-panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">MVP đề xuất</p>
+                <h2>Luồng sử dụng chính</h2>
+              </div>
+            </div>
+            <ol class="flow-list">
+              <li>Thêm thẻ bằng 4 số cuối, ngân hàng và danh mục chi tiêu hay dùng.</li>
+              <li>Nhập giao dịch hoặc import sao kê CSV/Excel theo tháng.</li>
+              <li>App tính hoàn tiền, cảnh báo gần đạt trần và nhắc kỳ sao kê.</li>
+              <li>Premium mở rộng nhiều thẻ, đồng bộ ngân hàng, báo cáo nâng cao.</li>
+            </ol>
+          </div>
+        </section>
+
+        <section id="cards" class="panel">
+          <div class="panel-heading controls-heading">
+            <div>
+              <p class="eyebrow">Tra cứu</p>
+              <h2>Danh sách thẻ và ưu đãi</h2>
+            </div>
+            <div class="controls">
+              <input id="searchInput" type="search" placeholder="Tìm ngân hàng, tên thẻ, ưu đãi..." />
+              <select id="categoryFilter" aria-label="Lọc danh mục"></select>
+              <select id="bankFilter" aria-label="Lọc ngân hàng"></select>
+            </div>
+          </div>
+          <div id="cardGrid" class="card-grid"></div>
+        </section>
+
+        <section id="calculator" class="panel calculator-panel">
+          <div>
+            <p class="eyebrow">Ước tính nhanh</p>
+            <h2>Máy tính cashback</h2>
+            <p class="muted">Nhập mức chi tiêu và tỷ lệ hoàn tiền để kiểm tra giá trị trước khi chọn thẻ. Dữ liệu nhạy cảm chỉ nằm trên trình duyệt.</p>
+          </div>
+          <form id="calculatorForm" class="calculator-form">
+            <label>
+              Chi tiêu mỗi tháng
+              <input id="spendAmount" type="number" min="0" step="100000" value="10000000" />
+            </label>
+            <label>
+              Tỷ lệ hoàn tiền (%)
+              <input id="cashbackRate" type="number" min="0" max="100" step="0.1" value="5" />
+            </label>
+            <label>
+              Trần hoàn mỗi tháng
+              <input id="monthlyCap" type="number" min="0" step="10000" value="300000" />
+            </label>
+            <output id="calculatorResult"></output>
+          </form>
+        </section>
+
+        <section id="verify" class="panel">
+          <div class="panel-heading controls-heading">
+            <div>
+              <p class="eyebrow">Data quality</p>
+              <h2>Các thẻ cần xác minh thêm</h2>
+            </div>
+            <input id="verifySearch" type="search" placeholder="Tìm trong danh sách cần verify..." />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Danh mục</th>
+                  <th>Ngân hàng</th>
+                  <th>Tên thẻ</th>
+                  <th>Lý do</th>
+                </tr>
+              </thead>
+              <tbody id="verifyRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
