@@ -44,14 +44,14 @@ function extractUrl(value) {
 }
 
 function renderMetrics() {
-  const totalCards = data.cards.length;
+  const totalCards = data.totalCards || data.cards.length;
   const banks = unique(data.cards.map((card) => card.bank));
   const enriched = data.cards.filter((card) => normalize(card.cashback).includes("%") || normalize(card.cashback).includes("diem")).length;
 
   document.querySelector("#totalCards").textContent = totalCards.toLocaleString("vi-VN");
   document.querySelector("#totalBanks").textContent = banks.length.toLocaleString("vi-VN");
   document.querySelector("#enrichedCards").textContent = enriched.toLocaleString("vi-VN");
-  document.querySelector("#openQuestions").textContent = data.openQuestions.length.toLocaleString("vi-VN");
+  document.querySelector("#openQuestions").textContent = (data.totalOpenQuestions || data.openQuestions.length).toLocaleString("vi-VN");
 }
 
 function renderCategoryBars() {
